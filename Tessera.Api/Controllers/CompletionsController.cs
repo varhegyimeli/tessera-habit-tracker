@@ -88,8 +88,9 @@ public class CompletionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid habitId, Guid id)
     {
-        var completion = await _completionRepository.GetByHabitIdAndDateAsync(habitId, DateOnly.MinValue);
-        if (completion == null || completion.Id != id)
+        var completions = await _completionRepository.GetByHabitIdAsync(habitId);
+        var completion = completions.FirstOrDefault(c => c.Id == id);
+        if (completion == null)
             return NotFound();
 
         await _completionRepository.DeleteAsync(id);
