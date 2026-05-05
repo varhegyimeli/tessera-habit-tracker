@@ -1,15 +1,44 @@
+using Tessera.Core.Interfaces;
+using Tessera.Core.Services;
+using Tessera.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Use default property casing
+    });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Get connection string
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? $"Data Source={Path.Combine(AppContext.BaseDirectory, "tessera.db")}";
+
+// Register data layer
+builder.Services.AddTesseraData(connectionString);
+
+// Register core services
+builder.Services.AddScoped<IStreakCalculator, StreakCalculator>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+
+// Add CORS policy for React frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -17,6 +46,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
