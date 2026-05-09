@@ -46,7 +46,7 @@ public class StatisticsService : IStatisticsService
     /// <param name="completions">The collection of completions for the habit.</param>
     /// <param name="from">The start date (inclusive).</param>
     /// <param name="to">The end date (inclusive).</param>
-    /// <returns>The completion rate as a percentage (0.0 to 100.0).</returns>
+    /// <returns>The completion rate as a percentage (0.0 to 1.0).</returns>
     /// <exception cref="ArgumentException">Thrown when 'from' is after 'to'.</exception>
     public double GetCompletionRate(IEnumerable<HabitCompletion> completions, DateOnly from, DateOnly to)
     {
@@ -67,6 +67,6 @@ public class StatisticsService : IStatisticsService
         if (totalDays == 0)
             return 0.0;
 
-        return (completionsInRange / (double)totalDays) * 100.0;
+        return (completionsInRange / (double)totalDays);
     }
 }
