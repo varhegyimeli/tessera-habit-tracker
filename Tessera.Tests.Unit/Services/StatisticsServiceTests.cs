@@ -85,7 +85,7 @@ public class StatisticsServiceTests
     #region GetCompletionRate Tests
 
     [Fact]
-    public void GetCompletionRate_AllDaysCompleted_ReturnsHundredPercent()
+    public void GetCompletionRate_AllDaysCompleted_ReturnsOne()
     {
         // Arrange
         var from = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-4);
@@ -103,11 +103,11 @@ public class StatisticsServiceTests
         var result = _sut.GetCompletionRate(completions, from, to);
 
         // Assert
-        result.Should().Be(100.0);
+        result.Should().Be(1.0);
     }
 
     [Fact]
-    public void GetCompletionRate_NoDaysCompleted_ReturnsZeroPercent()
+    public void GetCompletionRate_NoDaysCompleted_ReturnsZero()
     {
         // Arrange
         var from = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-10);
@@ -122,7 +122,7 @@ public class StatisticsServiceTests
     }
 
     [Fact]
-    public void GetCompletionRate_HalfDaysCompleted_ReturnsFiftyPercent()
+    public void GetCompletionRate_HalfDaysCompleted_ReturnsFifty()
     {
         // Arrange
         var from = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-3);
@@ -137,11 +137,11 @@ public class StatisticsServiceTests
         var result = _sut.GetCompletionRate(completions, from, to);
 
         // Assert
-        result.Should().Be(50.0);
+        result.Should().Be(0.5);
     }
 
     [Fact]
-    public void GetCompletionRate_SingleDayRangeDayCompleted_ReturnsHundredPercent()
+    public void GetCompletionRate_SingleDayRangeDayCompleted_ReturnsOne()
     {
         // Arrange
         var date = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -154,11 +154,11 @@ public class StatisticsServiceTests
         var result = _sut.GetCompletionRate(completions, date, date);
 
         // Assert
-        result.Should().Be(100.0);
+        result.Should().Be(1.0);
     }
 
     [Fact]
-    public void GetCompletionRate_SingleDayRangeDayNotCompleted_ReturnsZeroPercent()
+    public void GetCompletionRate_SingleDayRangeDayNotCompleted_ReturnsZero()
     {
         // Arrange
         var date = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -224,8 +224,8 @@ public class StatisticsServiceTests
         // Assert
         // Total days in range: 4 (from to from+3)
         // Completions in range: 2
-        // Expected: 2/4 * 100 = 50%
-        result.Should().Be(50.0);
+        // Expected: 2/4 = 0.5
+        result.Should().Be(0.5);
     }
 
     #endregion
